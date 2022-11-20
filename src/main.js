@@ -18,6 +18,7 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import './assets/css/global.css'
+import './assets/css/base.css'
 // import { MessageBox } from 'element-ui';
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
@@ -27,6 +28,9 @@ Vue.use(VueQuillEditor)
 
 Vue.use(ElementUI)
 Vue.config.productionTip = false
+
+import md5 from 'js-md5';
+Vue.prototype.$md5 = md5;
 
 // // http request 拦截器
 // axios.interceptors.request.use(config => {

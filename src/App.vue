@@ -1,14 +1,32 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <router-view v-if="isShow"></router-view>
   </div>
 </template>
 
 <script>
-import Home from './components/Home.vue'
+import Home from './views/Main.vue'
 export default {
   components: {
     Home
+  },
+  provide() {
+    return {
+      reload: this.reload
+    }
+  },
+  data() {
+    return {
+      isShow: true
+    }
+  },
+  methods: {
+    reload() {
+      this.isShow = false;
+      this.$nextTick(() => {
+        this.isShow = true;
+      })
+    }
   }
 
 }

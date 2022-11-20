@@ -1,34 +1,24 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '@/components/Login.vue'
-import Home from '@/components/Home.vue'
-import NotFound from '@/components/NotFound.vue'
-
-import HomePage from '@/components/menus/home/HomePage.vue'
-import Outsiders from '@/components/menus/region/Outsiders.vue'
-import Information from '@/components/menus/region/Information.vue'
-import Others from '@/components/menus/others/Others.vue'
-import Users from '@/components/menus/user/Users.vue'
-import Rights from '@/components/menus/power/Rights.vue'
-import Roles from '@/components/menus/power/Roles.vue'
+import NotFound from '@/views/NotFound.vue'
 
 Vue.use(VueRouter)
 const router = new VueRouter({
   routes: [
     { path: '/', redirect: '/login' },
-    { path: '/login', component: Login },
+    { path: '/login', component: () => import('@/views/Login.vue') },
     {
       path: '/home',
-      component: Home,
+      component: () => import('@/views/Main.vue'),
       redirect: '/home/homepage',
       children: [
-        { path: 'homepage', component: HomePage },
-        { path: 'outsiders', component: Outsiders },
-        { path: 'information', component: Information },
-        { path: 'others', component: Others },
-        { path: 'users', component: Users },
-        { path: 'rights', component: Rights },
-        { path: 'roles', component: Roles }
+        { path: 'homepage', component: () => import('@/views/module/home/HomePage.vue') },
+        { path: 'outsiders', component: () => import('@/views/module/region/Outsiders.vue') },
+        { path: 'information', component: () => import('@/views/module/region/Information.vue') },
+        { path: 'others', component: () => import('@/views/module/others/Others.vue') },
+        { path: 'users', component: () => import('@/views/module/user/Users.vue') },
+        { path: 'rights', component: () => import('@/views/module/power/Rights.vue') },
+        { path: 'roles', component: () => import('@/views/module/power/Roles.vue') }
       ]
     },
     { path: '*', component: NotFound }
@@ -36,15 +26,21 @@ const router = new VueRouter({
 })
 // 全局前置守卫
 router.beforeEach(function (to, from, next) {
-  if (to.path !== '/login') {
-    // 从sessionStorage中获取到保存的token
-    const tokenStr = window.sessionStorage.getItem('token');
-    if (!tokenStr) {
-      return next('/login');
+  const token = window.sessionStorage.getItem('token');
+  if (token) {
+    if (to.path === '/login') {
+      next('/home');
+    } else {
+      next();
     }
-    next();
+  } else {
+    // 无token
+    if (to.path !== '/login') {
+      next('/login');
+    } else {
+      next();
+    }
   }
-  next();
 })
 
 export default router
